@@ -1,48 +1,50 @@
-version: '3'
-
+version: '2'
 services:
 
-  djangoapp:
-    build: .
-    volumes:
-      - .:/opt/services/djangoapp/src
-      - static_volume:/opt/services/djangoapp/static
-      - media_volume:/opt/services/djangoapp/media
-    networks:
-      - nginx_network
-      - forumengine_database_network
-    depends_on:
-      - forumengine_database
+    web:
 
-  nginx:
-    image: nginx:1.13
-    ports:
-      - 8000:80
-    volumes:
-      - ./config/nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/opt/services/djangoapp/static
-      - media_volume:/opt/services/djangoapp/media
-    depends_on:
-      - djangoapp
-    networks:
-      - nginx_network
+        build: ./forumengine
+        volumes:
+        - ./forumengine:/usr/src/app
+        depends_on:
+          - redis
+          - postgres
+        expose:
+          - "8000"
+        command: gunicorn forumengine.wsgi -b 0.0.0.0:8000
 
-  forumengine_database:
-    image: postgres:10
-    env_file:
-      - config/db/forumengine_database_env
-    networks:
-      - forumengine_database_network
-    volumes:
-      - forumengine_database_volume:/var/lib/postgresql/data
 
-networks:
-  nginx_network:
-    driver: bridge
-  forumengine_database_network:
-    driver: bridge
+    postgres:
+
+        build: ./postgres
+        restart: unless-stopped
+        expose:
+            - "5432"
+        environment:   # will be used by the init script
+            LC_ALL: C.UTF-8
+            POSTGRES_USER: forum_db
+            POSTGRES_PASSWORD: forum_db
+            POSTGRES_DB: forum_db
+        volumes:
+            - pgdata:/var/lib/postgresql/data/  # persist container's db data to local pgdata/ (mounted)
+
+
+    redis:
+        image: sickp/alpine-redis:3.2.2
+        restart: unless-stopped
+        expose:
+            - "6379"
+        volumes:
+            - redisdata:/data
+
+    nginx:
+        restart: always
+        build: ./nginx/
+        ports:
+          - "8000:80"
+        links:
+          - web
 
 volumes:
-  forumengine_database_volume:
-  static_volume:
-  media_volume:
+  pgdata:
+  redisdata:

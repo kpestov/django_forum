@@ -78,12 +78,13 @@ WSGI_APPLICATION = 'forumengine.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'forumengine_database',
-        'USER': 'forumengine_database_role',
-        'PASSWORD': 'forumengine_database_password',
-        'HOST': 'forumengine_database',
-        'PORT': '5432',
+             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+             'NAME': 'forum_db',
+             'USER': 'forum_db',
+             'PASSWORD': 'forum_db',
+             'HOST': 'postgres',
+             'PORT': 5432,
+
     }
 }
 
