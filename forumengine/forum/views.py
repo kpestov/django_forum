@@ -49,7 +49,7 @@ class QuestionsList(View):
             'questions': page,
             'is_paginated': is_paginated,
             'next_url': next_url,
-            'prev_url': prev_url
+            'prev_url': prev_url,
         }
 
         return render(request, 'forum/index.html', context=context)
