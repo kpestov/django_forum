@@ -12,4 +12,12 @@ Service similar to StackOverflow where you can ask a question and get an answer.
 - a page navigation
 
 # How to run
+```
 docker-compose up -d --build
+```
+
+# What I learned
+- Django core
+- PostgresSQl
+- Many to one and many to many relation
+- Docker containerization
