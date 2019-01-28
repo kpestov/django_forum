@@ -18,6 +18,6 @@ docker-compose up -d --build
 
 # What I learned
 - Django core
-- PostgresSQL
+- PostgreSQL
 - Many to one and many to many relation
 - Docker containerization
